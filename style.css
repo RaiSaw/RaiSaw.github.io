@@ -1,0 +1,193 @@
+/*Styling the body*/
+@import url('https://fonts.googleapis.com/css2?family=Griffy&family=Hind:wght@300&family=Macondo+Swash+Caps&display=swap');body{
+    display: block;
+    overflow-x: hidden;
+    font-family: 'Hind', sans-serif;
+    background: radial-gradient(ellipse at top, #F9CEEE, #CCF3EE,#F9F3EE,TRANSPARENT), radial-gradient(ellipse at bottom,#4700D8,#9900F0, #FF85B3, transparent);
+    -webkit-animation: prettyNiceBG 8s ease-in-out infinite;
+    background-size: 400% 400%;
+}
+@-webkit-keyframes prettyNiceBG {
+    0%{background-position: 0 50%}
+    50%{background-position: 100% 100%}
+    100%{background-position: 0 50%}
+}
+
+h2, h5, nav {
+    font-family: 'Macondo Swash Caps', cursive;
+}
+
+.navbar-brand img {
+    max-height: 50px;
+}
+
+.navbar-brand {
+    font-size: 35px;
+    font-weight: 900;
+    color: white;
+    font-family: 'Macondo Swash Caps', cursive;
+    text-transform: uppercase;
+}
+
+nav ul li a {
+    font-size: 30px;
+    color: #390050;
+    margin: auto 10px;
+}
+
+nav ul li a:hover {
+    color: #683aa4;
+}
+.navbarScroll {
+    border-bottom: 1px black solid;
+    background-color: black;
+    radius : 0px 0px 0px 0px;
+}
+.navbarScroll.navbarDark {
+    background-color: #390050;
+}
+/*Styling for Hero Section*/
+section {
+    padding-top: 100px;
+    padding-bottom: 100px;
+}
+
+section h1 {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-weight: 900;
+    text-align: left;
+}
+
+h1 {
+    font-family: 'Griffy', cursive;
+    color: #683aa4;
+    font-size: 40px;
+
+}
+section p {
+    font-weight: 300;
+    font-size: 25px;
+}
+
+h2 {
+    border-radius: 0 !important;
+    max-width: 45%;
+    text-align: center;
+    color: #683aa4;
+    font-size: 40px;
+
+    --d: 14px;
+
+    padding: 8px 8px calc(8px + var(--d)) 8px;
+    background: linear-gradient(rgba(255, 255, 255, 0.4) 0 0) bottom/100% var(--d) no-repeat;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--d)), calc(100% - 3px) calc(100% - var(--d)), 3px calc(100% - var(--d)), 0 calc(100% - var(--d)));
+    transform: perspective(1000px) rotateX(0deg);
+    transition: 0.4s, color 0.4s 0.4s, background-color 0.4s 0.4s;
+}
+
+h2:hover {
+    background-color: #390050;
+    color: #CCF3EE;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--d)), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - var(--d)));
+    transform: perspective(1000px) rotateX(40deg);
+    transition: 0.4s, clip-path 0.4s 0.4s, transform 0.4s 0.4s;
+}
+
+#hero .col {
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+}
+
+#hero .img-col {
+    justify-content: flex-end;
+    margin-top: 50px;
+}
+
+#hero img {
+    max-width: 130% !important;
+    width: 120%;
+}
+
+/*Styling for the cards*/
+#hero .card {
+    box-shadow: 15px 11px 20px #390050;
+    border: 10px;
+    text-align: center;
+}
+
+#hero .cards .card {
+    width: 300px;
+    height: 300px;
+    margin-bottom: 50px;
+    border: 10px;
+}
+
+/*Styling for Icons if + */
+#hero .icon{
+    width: 300px;
+    height: 300px;
+}
+
+
+/*Styling for the Project Section*/
+#myArtworks img{
+    margin-bottom: 5px;
+    width: 600px;
+    height: 600px;
+    object-fit: contain;
+    align-self: center;
+    color: #CCF3EE;
+}
+h5{
+    font-size: 25px;
+}
+p{
+    font-size: 23px;
+}
+
+/*Styling contact section*/
+#contact {
+    text-align: center;
+    background-color: #390050;
+    color: #E1F5F2;
+}
+
+#contact h1 {
+    text-align: center;
+    color: white;
+    font-size: 45px;
+}
+
+.heart{
+    animation-name: scaleheart;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+
+    @keyframes scaleheart{
+        0%{
+            transform: scale(1.3%);
+        }
+        50%{
+            transform: rotate(1deg);
+        }
+    }
+    .meditating{
+        animation-name: levitate;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes levitate {
+        20%{
+            transform:skew(5deg);
+
+        }
+        70%{
+            transform: translateY(-55px)
+        }
+    }
+
