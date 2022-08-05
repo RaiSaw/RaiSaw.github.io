@@ -66,7 +66,7 @@ h1.greeting:first-letter {
     text-transform: uppercase;
     line-height: .5;
     font-size: 50px;
-    margin: 10px 5px 10px 0;
+    margin: 10px 2px 10px 0;
 }
 
 h1 {
@@ -125,24 +125,15 @@ h2:hover {
     width: 300px;
     height: 300px;
     margin-bottom: 30px;
-    border: 15px;
     filter: drop-shadow(10px 30px 20px rgba(0,0,0,.75));
 }
 
 #hero .pic{
     width: 250px;
     height: 250px;
+    border-spacing: 20px;
     clip-path:circle(50%);
-    -webkit-transition: -webkit-transform 0.2s;
-    transition: -webkit-transform 0.2s;
-    transition: transform 0.2s;
-    transition: transform 0.2s, -webkit-transform 0.2s;
 }
-#hero .pic:hover{
-    -webkit-transform:scale(1.2);
-    transform:scale(1.2);
-}
-
 
 /*Styling for the Project Section*/
 #myArtworks img{
@@ -157,14 +148,28 @@ h2:hover {
 #myArtworks img:hover{
      filter: blur(0);
 }
-#myArtworks img:active{
-    filter: blur(0);
-}
 h5{
-    font-size: 25px;
+    font-size: 27px;
+    font-weight: 700;
 }
+.card-title{
+    margin-left: 50px;
+}
+#silver{
+    margin-left: 110px;
+}
+.card-title:hover{
+    color: #4700D8;
+}
+
 p{
     font-size: 25px;
+}
+.about{
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 /*Styling contact section*/
 #contact {
@@ -177,13 +182,13 @@ p{
     color: white;
     font-size: 40px;
 }
-#contact h1, .social{
+#contact h1, .social, #hero .pic, h5{
     -webkit-transition: -webkit-transform 0.2s;
     transition: -webkit-transform 0.2s;
     transition: transform 0.2s;
     transition: transform 0.2s, -webkit-transform 0.2s;
 }
-#contact h1:hover, .social:hover{
+#contact h1:hover, .social:hover, #hero .pic:hover, h5{
     -webkit-transform:scale(1.2);
     transform:scale(1.2);
 }
