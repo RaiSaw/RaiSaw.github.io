@@ -3,6 +3,7 @@
     display: block;
     overflow-x: hidden;
     font-family: 'Hind', sans-serif;
+    -webkit-font-smoothing: antialiased;
     background: radial-gradient(ellipse at top, #F9CEEE, #CCF3EE,#F9F3EE,TRANSPARENT), radial-gradient(ellipse at bottom,#4700D8,#9900F0, #FF85B3, transparent);
     -webkit-animation: prettyNiceBG 8s ease-in-out infinite;
     background-size: 400% 400%;
@@ -99,7 +100,7 @@ h2 {
 
 h2:hover {
     background-color: #390050;
-    color: #CCF3EE;
+    color: white;
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--d)), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - var(--d)));
     transform: perspective(1000px) rotateX(40deg);
     transition: 0.4s, clip-path 0.4s 0.4s, transform 0.4s 0.4s;
@@ -116,6 +117,50 @@ h2:hover {
     margin-top: 50px;
 }
 
+#hero model-viewer {
+    display:flex;
+    width: 550px;
+    height: 550px;
+    flex-direction: column;
+    position: absolute;
+    border:none;
+    animation-name: fly;
+    animation-duration: 2.5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes fly {
+    20%{
+        transform: rotateZ(55deg);
+        filter: drop-shadow(10px 30px 15px rgba(0,0,0,.60));
+    }
+    70%{
+        transform: translateZ(-55px);
+        filter: drop-shadow(20px 30px 10px rgba(0,0,0,.60));
+    }
+}
+#aboutMe model-viewer {
+      display:flex;
+      width: 550px;
+      height: 550px;
+      flex-direction: column;
+      position: absolute;
+      border:none;
+      animation-name: fly;
+      animation-duration: 2.5s;
+      animation-iteration-count: infinite;
+}
+@keyframes fly {
+    20%{
+        transform: rotateY(55deg);
+        filter: drop-shadow(10px 30px 15px rgba(0,0,0,.60));
+    }
+    70%{
+        transform: translateY(-55px);
+        filter: drop-shadow(20px 30px 10px rgba(0,0,0,.60));
+    }
+}
+
 #hero img {
     max-width: 130% !important;
     width: 120%;
@@ -124,7 +169,7 @@ h2:hover {
 #hero .virtualEx {
     width: 300px;
     height: 300px;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
     filter: drop-shadow(10px 30px 20px rgba(0,0,0,.75));
 }
 
@@ -132,6 +177,7 @@ h2:hover {
     width: 250px;
     height: 250px;
     border-spacing: 20px;
+    border:20px;
     clip-path:circle(50%);
 }
 
@@ -152,25 +198,27 @@ h5{
     font-size: 27px;
     font-weight: 700;
 }
-.card-title{
-    margin-left: 50px;
+#virtualExh h1, #myArtworks h1{
+    margin-bottom: 35px;
+    text-align: center;
 }
-#silver{
-    margin-left: 110px;
+
+.card-title, .card-text{
+    text-align: center;
+    margin-top: 20px;
 }
+
 .card-title:hover{
+    color: #390050;
+}
+#myArtworks .card-title:hover{
     color: #4700D8;
 }
 
 p{
     font-size: 25px;
 }
-.about{
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+
 /*Styling contact section*/
 #contact {
     text-align: center;
@@ -212,20 +260,7 @@ p{
             filter: drop-shadow(20px 30px 7px rgba(0,0,0,.50));
         }
     }
-    .meditating{
-        animation-name: levitate;
-        animation-duration: 4s;
-        animation-iteration-count: infinite;
-    }
+    #aboutMe model-viewer{
 
-    @keyframes levitate {
-        20%{
-            transform:skew(5deg);
-            filter: drop-shadow(10px 30px 15px rgba(0,0,0,.60));
-        }
-        70%{
-            transform: translateY(-55px);
-            filter: drop-shadow(20px 30px 10px rgba(0,0,0,.60));
-        }
     }
 
