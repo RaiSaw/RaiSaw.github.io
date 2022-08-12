@@ -119,8 +119,8 @@ h2:hover {
 
 #hero model-viewer {
     display:flex;
-    width: 550px;
-    height: 550px;
+    width: 700px;
+    height: 700px;
     flex-direction: column;
     position: absolute;
     border:none;
@@ -141,13 +141,12 @@ h2:hover {
 }
 #aboutMe model-viewer {
       display:flex;
-      width: 550px;
-      height: 550px;
+      width: 500px;
+      height: 500px;
       flex-direction: column;
-      position: absolute;
       border:none;
       animation-name: fly;
-      animation-duration: 2.5s;
+      animation-duration: 2s;
       animation-iteration-count: infinite;
 }
 @keyframes fly {
