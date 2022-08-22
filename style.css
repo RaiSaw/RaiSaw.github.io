@@ -1,10 +1,19 @@
-/*Styling the body*/
-@import url('https://fonts.googleapis.com/css2?family=Griffy&family=Hind:wght@300&family=Macondo+Swash+Caps&display=swap');body{
+@import url('https://fonts.googleapis.com/css2?family=Griffy&family=Hind:wght@300&family=Macondo+Swash+Caps&display=swap'); * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
     display: block;
     overflow-x: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
     font-family: 'Hind', sans-serif;
     -webkit-font-smoothing: antialiased;
-    background: radial-gradient(ellipse at top, #F9CEEE, #CCF3EE,#F9F3EE,TRANSPARENT), radial-gradient(ellipse at bottom,#4700D8,#9900F0, #FF85B3, transparent);
+    color: #CCF3EE;
+    background: black; radial-gradient(ellipse at top, #F9CEEE, #CCF3EE,#F9F3EE,TRANSPARENT), radial-gradient(ellipse at bottom,#4700D8,#9900F0, #FF85B3, transparent);
     -webkit-animation: prettyNiceBG 8s ease-in-out infinite;
     background-size: 400% 400%;
 }
@@ -12,6 +21,19 @@
     0%{background-position: 0 50%}
     50%{background-position: 100% 100%}
     100%{background-position: 0 50%}
+}
+
+#canvas1{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right:0;
+    bottom:0;
+    width: 100%;
+    height: 100%;
+    margin:0;
+    overflow: hidden;
+    display: block;
 }
 
 h2, h5, nav {
@@ -51,7 +73,7 @@ nav ul li a:hover {
 .navbarScroll.navbarDark {
     background-color:black ;
 }
-/*Styling for Hero Section*/
+
 section {
     padding-top: 100px;
     padding-bottom: 100px;
@@ -119,8 +141,8 @@ h2:hover {
 
 #hero model-viewer {
     display:flex;
-    width: 600px;
-    height: 600px;
+    width: 520px;
+    height: 520px;
     flex-direction: column;
     position: absolute;
     border:none;
@@ -145,6 +167,7 @@ h2:hover {
       height: 350px;
       flex-direction: column;
       border:none;
+      justify-content: center;
       position: absolute;
       animation-name: fly;
       animation-duration: 2s;
@@ -203,24 +226,26 @@ h5{
     text-align: center;
 }
 
-.card-title, .card-text{
+.card-title, .card-text, .title, .text{
     text-align: center;
     margin-top: 20px;
 }
 
-.card-title:hover{
-    color: #390050;
+.card-text{
+    color: black;
 }
-#myArtworks .card-title:hover{
-    color: #4700D8;
+
+.title, .card-title{
+    color: #683aa4;
 }
 
 p{
     font-size: 25px;
+    color: white;
 }
 
 /*Styling contact section*/
-#contact {
+#contact, #contact p{
     text-align: center;
     background-color: #390050;
     color: #E1F5F2;
