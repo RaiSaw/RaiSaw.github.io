@@ -1,28 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Griffy&family=Hind:wght@300&family=Macondo+Swash+Caps&display=swap'); * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body{
+@import url('https://fonts.googleapis.com/css2?family=Griffy&family=Hind:wght@300&family=Macondo+Swash+Caps&display=swap'); body {
     display: block;
     overflow-x: hidden;
-    width: 100%;
-    height: 100%;
-    margin: 0;
     font-family: 'Hind', sans-serif;
     -webkit-font-smoothing: antialiased;
-    color: #CCF3EE;
-    background: black; radial-gradient(ellipse at top, #F9CEEE, #CCF3EE,#F9F3EE,TRANSPARENT), radial-gradient(ellipse at bottom,#4700D8,#9900F0, #FF85B3, transparent);
-    -webkit-animation: prettyNiceBG 8s ease-in-out infinite;
+    box-sizing: border-box;
+    color: white;
+    background: radial-gradient(ellipse at top, teal, black, indigo );
     background-size: 400% 400%;
 }
+/*radial-gradient(ellipse at top, #F9CEEE, #CCF3EE,#F9F3EE,TRANSPARENT), radial-gradient(ellipse at bottom,#4700D8,#9900F0, #FF85B3, transparent);
+    -webkit-animation: prettyNiceBG 8s ease-in-out infinite;
 @-webkit-keyframes prettyNiceBG {
     0%{background-position: 0 50%}
     50%{background-position: 100% 100%}
     100%{background-position: 0 50%}
-}
-
+}*/
 #canvas1{
     position: absolute;
     top: 0;
@@ -33,7 +25,16 @@ body{
     height: 100%;
     margin:0;
     overflow: hidden;
-    display: block;
+}
+
+footer{
+    position: revert;
+    height: 300px;
+    left: 0;
+    line-height: 30px;
+    width: 100%;
+    text-align: center;
+    bottom: 0;
 }
 
 h2, h5, nav {
@@ -97,8 +98,8 @@ h1 {
     color: #683aa4;
     font-size: 40px;
     font-weight: 900;
-
 }
+
 section p {
     font-weight: 300;
     font-size: 25px;
@@ -238,6 +239,12 @@ h5{
 .title, .card-title{
     color: #683aa4;
 }
+.title:hover, .card-title:hover{
+    color: #4700D8;
+}
+.title:hover{
+    color: white;
+}
 
 p{
     font-size: 25px;
@@ -258,7 +265,6 @@ p{
 #contact h1, .social, #hero .pic, h5{
     -webkit-transition: -webkit-transform 0.2s;
     transition: -webkit-transform 0.2s;
-    transition: transform 0.2s;
     transition: transform 0.2s, -webkit-transform 0.2s;
 }
 #contact h1:hover, .social:hover, #hero .pic:hover, h5{
