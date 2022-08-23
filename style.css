@@ -3,7 +3,6 @@
     overflow-x: hidden;
     font-family: 'Hind', sans-serif;
     -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
     color: white;
     background: radial-gradient(ellipse at top, teal, black, indigo );
     background-size: 400% 400%;
@@ -28,7 +27,7 @@
 }
 
 footer{
-    position: revert;
+    position: absolute;
     height: 300px;
     left: 0;
     line-height: 30px;
