@@ -24,16 +24,7 @@
     height: 100%;
     margin:0;
     overflow: hidden;
-}
-
-footer{
-    position: absolute;
-    height: 300px;
-    left: 0;
-    line-height: 30px;
-    width: 100%;
-    text-align: center;
-    bottom: 0;
+    background-size: 400% 400%;
 }
 
 h2, h5, nav {
@@ -144,7 +135,7 @@ h2:hover {
     width: 520px;
     height: 520px;
     flex-direction: column;
-    position: absolute;
+    position: center;
     border:none;
     animation-name: fly;
     animation-duration: 2.5s;
@@ -167,8 +158,7 @@ h2:hover {
       height: 350px;
       flex-direction: column;
       border:none;
-      justify-content: center;
-      position: absolute;
+      position: center;
       animation-name: fly;
       animation-duration: 2s;
       animation-iteration-count: infinite;
@@ -206,9 +196,8 @@ h2:hover {
 
 /*Styling for the Project Section*/
 #myArtworks img{
-    margin-bottom: 5px;
-    width: 600px;
-    height: 600px;
+    width: 500px;
+    height: 500px;
     object-fit: contain;
     align-self: center;
     color: #CCF3EE;
@@ -240,9 +229,6 @@ h5{
 }
 .title:hover, .card-title:hover{
     color: #4700D8;
-}
-.title:hover{
-    color: white;
 }
 
 p{
