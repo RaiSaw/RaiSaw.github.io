@@ -9,26 +9,22 @@ window.onscroll = function () {
         header.classList.remove('navbarDark');
     }
 }
+
 const canvas1 = document.getElementById('canvas1');
 const ctx1 = canvas1.getContext('2d');
 canvas1.width = window.innerWidth;
 canvas1.height = window.innerHeight;
-
 const particlesArray = [];
 let hue = 0;
-
-window.addEventListener('load',animate);
 
 window.addEventListener('resize', function(){
     canvas1.width = window.innerWidth;
     canvas1.height = window.innerHeight;
 });
-
 const mouse ={
     x: undefined,
     y: undefined,
 }
-
 canvas1.addEventListener('click', function(event){
     mouse.x = event.x;
     mouse.y = event.y;
@@ -43,8 +39,7 @@ canvas1.addEventListener('mousemove', function(event) {
     for (let i = 0; i < 10; i++){
         particlesArray.push(new Particle());
     }
-})
-
+});
 class Particle{
     constructor(){
         this.x = mouse.x;
@@ -67,14 +62,14 @@ class Particle{
     }
 }
 function handleParticles(){
-    for (let i = 0; i< particlesArray.length; i++){
+    for (let i = 0; i< particlesArray.length; i++) {
         particlesArray[i].update();
         particlesArray[i].draw();
-        for (let j = i; j< particlesArray.length; j++) {
+        for (let j = i; j < particlesArray.length; j++) {
             const dx = particlesArray[i].x - particlesArray[j].x;
             const dy = particlesArray[i].y - particlesArray[j].y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < 100){
+            if (distance < 100) {
                 ctx1.beginPath();
                 ctx1.strokeStyle = particlesArray[i].color;
                 ctx1.lineWidth = particlesArray[i].size;
@@ -83,16 +78,18 @@ function handleParticles(){
                 ctx1.closePath();
             }
         }
-        if (particlesArray[i].size <= 0.3){
+        if (particlesArray[i].size <= 0.3) {
             particlesArray.splice(i, 1);
             i--;
         }
     }
+
 }
 function animate(){
     ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
     handleParticles();
-    hue++;
+    hue+=2;
 
-    requestAnimationFrame(animate)
+    requestAnimationFrame(animate);
 }
+animate();
