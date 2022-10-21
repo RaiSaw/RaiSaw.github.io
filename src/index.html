@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>This is my Portfolio Website🧚🏼‍</title>
+    <meta name="description" content="A brief description">
+    <meta name="author" content="Rai's Sketchworld Website">
+
+    <link rel="stylesheet" href="style.css"/>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1 class="greeting">Hey, I'm Rai!</h1>
+            <p>I'm an autodidact artist, currently making my way to 3D, animation and front-end web development</p>
+        </div>
+        <div class="content">
+            <h1>About Me</h1>
+            <p>I've been sketching and doodling since I was a kid and finally started focusing on my art these last few years. <br>I'm still experimenting and exploring different mediums to express my art.</p>
+            <p>My paintings are representations of my emotions, thoughts and experiences. <br>My works are mostly mixture of surrealism and figurative with touches of nature, space or fantasy. <br>Art is not just a form of expression but as well a meditation for me.</p>
+        </div>
+        <div class="content">
+            <h2>My website's still under construction..</h2>
+        </div>
+    </div>
+    <canvas class="webgl"></canvas>
+    <canvas id="canvas1" ></canvas>
+    <model-viewer  class="img-fluid" alt="Butterflies" src="Assets/butter.gltf" autorotate animation-name="flying" shadow-intensity="1" camera-controls ar enable-pan></model-viewer>
+    <model-viewer class="img-fluid" alt="blue butterfly" src="Assets/blu.glb" autoplay shadow-intensity="1" camera-controls ar enable-pan></model-viewer>
+
+</body>
+</html>
