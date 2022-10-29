@@ -22,12 +22,12 @@ class ShareRuntimeModule extends RuntimeModule {
 	 * @returns {string} runtime code
 	 */
 	generate() {
+		const { compilation, chunkGraph } = this;
 		const {
 			runtimeTemplate,
-			chunkGraph,
 			codeGenerationResults,
 			outputOptions: { uniqueName }
-		} = this.compilation;
+		} = compilation;
 		/** @type {Map<string, Map<number, Set<string>>>} */
 		const initCodePerScope = new Map();
 		for (const chunk of this.chunk.getAllReferencedChunks()) {
@@ -91,7 +91,7 @@ class ShareRuntimeModule extends RuntimeModule {
 						]
 					)};`,
 					`var initExternal = ${runtimeTemplate.basicFunction("id", [
-						`var handleError = ${runtimeTemplate.returningFunction(
+						`var handleError = ${runtimeTemplate.expressionFunction(
 							'warn("Initialization of sharing external failed: " + err)',
 							"err"
 						)};`,
@@ -105,7 +105,7 @@ class ShareRuntimeModule extends RuntimeModule {
 							)}`,
 							"if(module.then) return promises.push(module.then(initFn, handleError));",
 							"var initResult = initFn(module);",
-							"if(initResult && initResult.then) return promises.push(initResult.catch(handleError));"
+							"if(initResult && initResult.then) return promises.push(initResult['catch'](handleError));"
 						]),
 						"} catch(err) { handleError(err); }"
 					])}`,

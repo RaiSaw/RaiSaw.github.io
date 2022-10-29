@@ -10,6 +10,7 @@ const {
 	getDependencyUsedByExportsCondition
 } = require("../optimize/InnerGraph");
 const makeSerializable = require("../util/makeSerializable");
+const memoize = require("../util/memoize");
 const ModuleDependency = require("./ModuleDependency");
 
 /** @typedef {import("webpack-sources").ReplaceSource} ReplaceSource */
@@ -17,11 +18,14 @@ const ModuleDependency = require("./ModuleDependency");
 /** @typedef {import("../Dependency")} Dependency */
 /** @typedef {import("../Dependency").UpdateHashContext} UpdateHashContext */
 /** @typedef {import("../DependencyTemplate").DependencyTemplateContext} DependencyTemplateContext */
+/** @typedef {import("../Module")} Module */
 /** @typedef {import("../ModuleGraph")} ModuleGraph */
 /** @typedef {import("../ModuleGraphConnection")} ModuleGraphConnection */
 /** @typedef {import("../ModuleGraphConnection").ConnectionState} ConnectionState */
 /** @typedef {import("../util/Hash")} Hash */
 /** @typedef {import("../util/runtime").RuntimeSpec} RuntimeSpec */
+
+const getRawDataUrlModule = memoize(() => require("../asset/RawDataUrlModule"));
 
 class URLDependency extends ModuleDependency {
 	/**
@@ -57,6 +61,15 @@ class URLDependency extends ModuleDependency {
 			this.usedByExports,
 			moduleGraph
 		);
+	}
+
+	/**
+	 * @param {string} context context directory
+	 * @returns {Module} a module
+	 */
+	createIgnoredModule(context) {
+		const RawDataUrlModule = getRawDataUrlModule();
+		return new RawDataUrlModule("data:,", `ignored-asset`, `(ignored asset)`);
 	}
 
 	serialize(context) {

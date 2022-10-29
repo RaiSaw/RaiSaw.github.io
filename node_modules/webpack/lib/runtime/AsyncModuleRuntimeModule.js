@@ -22,31 +22,29 @@ class AsyncModuleRuntimeModule extends HelperRuntimeModule {
 		return Template.asString([
 			'var webpackThen = typeof Symbol === "function" ? Symbol("webpack then") : "__webpack_then__";',
 			'var webpackExports = typeof Symbol === "function" ? Symbol("webpack exports") : "__webpack_exports__";',
+			'var webpackError = typeof Symbol === "function" ? Symbol("webpack error") : "__webpack_error__";',
 			`var completeQueue = ${runtimeTemplate.basicFunction("queue", [
 				"if(queue) {",
-				Template.indent(
-					runtimeTemplate.supportsArrowFunction()
-						? [
-								"queue.forEach(fn => fn.r--);",
-								"queue.forEach(fn => fn.r-- ? fn.r++ : fn());"
-						  ]
-						: [
-								"queue.forEach(function(fn) { fn.r--; });",
-								"queue.forEach(function(fn) { fn.r-- ? fn.r++ : fn(); });"
-						  ]
-				),
+				Template.indent([
+					`queue.forEach(${runtimeTemplate.expressionFunction(
+						"fn.r--",
+						"fn"
+					)});`,
+					`queue.forEach(${runtimeTemplate.expressionFunction(
+						"fn.r-- ? fn.r++ : fn()",
+						"fn"
+					)});`
+				]),
 				"}"
 			])}`,
-			`var completeFunction = ${
-				runtimeTemplate.supportsArrowFunction()
-					? "fn => !--fn.r && fn()"
-					: "function(fn) { !--fn.r && fn(); }"
-			};`,
-			`var queueFunction = ${
-				runtimeTemplate.supportsArrowFunction()
-					? "(queue, fn) => queue ? queue.push(fn) : completeFunction(fn)"
-					: "function(queue, fn) { queue ? queue.push(fn) : completeFunction(fn); }"
-			};`,
+			`var completeFunction = ${runtimeTemplate.expressionFunction(
+				"!--fn.r && fn()",
+				"fn"
+			)};`,
+			`var queueFunction = ${runtimeTemplate.expressionFunction(
+				"queue ? queue.push(fn) : completeFunction(fn)",
+				"queue, fn"
+			)};`,
 			`var wrapDeps = ${runtimeTemplate.returningFunction(
 				`deps.map(${runtimeTemplate.basicFunction("dep", [
 					'if(dep !== null && typeof dep === "object") {',
@@ -54,19 +52,33 @@ class AsyncModuleRuntimeModule extends HelperRuntimeModule {
 						"if(dep[webpackThen]) return dep;",
 						"if(dep.then) {",
 						Template.indent([
-							"var queue = [], result;",
+							"var queue = [];",
 							`dep.then(${runtimeTemplate.basicFunction("r", [
 								"obj[webpackExports] = r;",
 								"completeQueue(queue);",
 								"queue = 0;"
+							])}, ${runtimeTemplate.basicFunction("e", [
+								"obj[webpackError] = e;",
+								"completeQueue(queue);",
+								"queue = 0;"
 							])});`,
-							"var obj = { [webpackThen]: (fn, reject) => { queueFunction(queue, fn); dep.catch(reject); } };",
+							"var obj = {};",
+							`obj[webpackThen] = ${runtimeTemplate.expressionFunction(
+								"queueFunction(queue, fn), dep['catch'](reject)",
+								"fn, reject"
+							)};`,
 							"return obj;"
 						]),
 						"}"
 					]),
 					"}",
-					"return { [webpackThen]: (fn) => { completeFunction(fn); }, [webpackExports]: dep };"
+					"var ret = {};",
+					`ret[webpackThen] = ${runtimeTemplate.expressionFunction(
+						"completeFunction(fn)",
+						"fn"
+					)};`,
+					"ret[webpackExports] = dep;",
+					"return ret;"
 				])})`,
 				"deps"
 			)};`,
@@ -84,9 +96,10 @@ class AsyncModuleRuntimeModule extends HelperRuntimeModule {
 						"if (nested) return;",
 						"nested = true;",
 						"onResolve.r += deps.length;",
-						`deps.map(${runtimeTemplate.basicFunction("dep, i", [
-							"dep[webpackThen](onResolve, onReject);"
-						])});`,
+						`deps.map(${runtimeTemplate.expressionFunction(
+							"dep[webpackThen](onResolve, onReject)",
+							"dep, i"
+						)});`,
 						"nested = false;"
 					]
 				)};`,
@@ -94,11 +107,9 @@ class AsyncModuleRuntimeModule extends HelperRuntimeModule {
 					"resolve, rej",
 					[
 						"reject = rej;",
-						`outerResolve = ${runtimeTemplate.basicFunction("", [
-							"resolve(exports);",
-							"completeQueue(queue);",
-							"queue = 0;"
-						])};`
+						`outerResolve = ${runtimeTemplate.expressionFunction(
+							"resolve(exports), completeQueue(queue), queue = 0"
+						)};`
 					]
 				)});`,
 				"promise[webpackExports] = exports;",
@@ -108,26 +119,34 @@ class AsyncModuleRuntimeModule extends HelperRuntimeModule {
 						"if (isEvaluating) { return completeFunction(fn); }",
 						"if (currentDeps) whenAll(currentDeps, fn, rejectFn);",
 						"queueFunction(queue, fn);",
-						"promise.catch(rejectFn);"
+						"promise['catch'](rejectFn);"
 					]
 				)};`,
 				"module.exports = promise;",
 				`body(${runtimeTemplate.basicFunction("deps", [
-					"if(!deps) return outerResolve();",
 					"currentDeps = wrapDeps(deps);",
-					"var fn, result;",
+					"var fn;",
+					`var getResult = ${runtimeTemplate.returningFunction(
+						`currentDeps.map(${runtimeTemplate.basicFunction("d", [
+							"if(d[webpackError]) throw d[webpackError];",
+							"return d[webpackExports];"
+						])})`
+					)}`,
 					`var promise = new Promise(${runtimeTemplate.basicFunction(
 						"resolve, reject",
 						[
-							`fn = ${runtimeTemplate.returningFunction(
-								"resolve(result = currentDeps.map(d => d[webpackExports]))"
-							)}`,
+							`fn = ${runtimeTemplate.expressionFunction(
+								"resolve(getResult)"
+							)};`,
 							"fn.r = 0;",
 							"whenAll(currentDeps, fn, reject);"
 						]
 					)});`,
-					"return fn.r ? promise : result;"
-				])}).then(outerResolve, reject);`,
+					"return fn.r ? promise : getResult();"
+				])}, ${runtimeTemplate.expressionFunction(
+					"err && reject(promise[webpackError] = err), outerResolve()",
+					"err"
+				)});`,
 				"isEvaluating = false;"
 			])};`
 		]);

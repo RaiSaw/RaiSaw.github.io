@@ -19,6 +19,7 @@ const makeSerializable = require("./util/makeSerializable");
 /** @typedef {import("../declarations/WebpackOptions").WebpackOptionsNormalized} WebpackOptions */
 /** @typedef {import("./Chunk")} Chunk */
 /** @typedef {import("./ChunkGroup")} ChunkGroup */
+/** @typedef {import("./CodeGenerationResults")} CodeGenerationResults */
 /** @typedef {import("./Compilation")} Compilation */
 /** @typedef {import("./ConcatenationScope")} ConcatenationScope */
 /** @typedef {import("./Dependency")} Dependency */
@@ -27,6 +28,7 @@ const makeSerializable = require("./util/makeSerializable");
 /** @typedef {import("./ExportsInfo").UsageStateType} UsageStateType */
 /** @typedef {import("./FileSystemInfo")} FileSystemInfo */
 /** @typedef {import("./ModuleGraphConnection").ConnectionState} ConnectionState */
+/** @typedef {import("./NormalModuleFactory")} NormalModuleFactory */
 /** @typedef {import("./RequestShortener")} RequestShortener */
 /** @typedef {import("./ResolverFactory").ResolverWithOptions} ResolverWithOptions */
 /** @typedef {import("./RuntimeTemplate")} RuntimeTemplate */
@@ -47,6 +49,7 @@ const makeSerializable = require("./util/makeSerializable");
  * @property {string=} type the type of source that should be generated
  */
 
+// TODO webpack 6: compilation will be required in CodeGenerationContext
 /**
  * @typedef {Object} CodeGenerationContext
  * @property {DependencyTemplates} dependencyTemplates the dependency templates
@@ -55,6 +58,9 @@ const makeSerializable = require("./util/makeSerializable");
  * @property {ChunkGraph} chunkGraph the chunk graph
  * @property {RuntimeSpec} runtime the runtimes code should be generated for
  * @property {ConcatenationScope=} concatenationScope when in concatenated module, information about other concatenated modules
+ * @property {CodeGenerationResults} codeGenerationResults code generation results of other modules (need to have a codeGenerationDependency to use that)
+ * @property {Compilation=} compilation the compilation
+ * @property {ReadonlySet<string>=} sourceTypes source types
  */
 
 /**
@@ -92,7 +98,9 @@ const makeSerializable = require("./util/makeSerializable");
 
 /**
  * @typedef {Object} NeedBuildContext
+ * @property {Compilation} compilation
  * @property {FileSystemInfo} fileSystemInfo
+ * @property {Map<string, string | Set<string>>} valueCacheVersions
  */
 
 /** @typedef {KnownBuildMeta & Record<string, any>} BuildMeta */
@@ -162,6 +170,8 @@ class Module extends DependenciesBlock {
 		this.buildInfo = undefined;
 		/** @type {Dependency[] | undefined} */
 		this.presentationalDependencies = undefined;
+		/** @type {Dependency[] | undefined} */
+		this.codeGenerationDependencies = undefined;
 	}
 
 	// TODO remove in webpack 6
@@ -393,7 +403,6 @@ class Module extends DependenciesBlock {
 	// BACKWARD-COMPAT END
 
 	/**
-	 * @deprecated moved to .buildInfo.exportsArgument
 	 * @returns {string} name of the exports argument
 	 */
 	get exportsArgument() {
@@ -401,7 +410,6 @@ class Module extends DependenciesBlock {
 	}
 
 	/**
-	 * @deprecated moved to .buildInfo.moduleArgument
 	 * @returns {string} name of the module argument
 	 */
 	get moduleArgument() {
@@ -491,12 +499,28 @@ class Module extends DependenciesBlock {
 	}
 
 	/**
+	 * @param {Dependency} codeGenerationDependency dependency being tied to module.
+	 * This is a Dependency where the code generation result of the referenced module is needed during code generation.
+	 * The Dependency should also be added to normal dependencies via addDependency.
+	 * @returns {void}
+	 */
+	addCodeGenerationDependency(codeGenerationDependency) {
+		if (this.codeGenerationDependencies === undefined) {
+			this.codeGenerationDependencies = [];
+		}
+		this.codeGenerationDependencies.push(codeGenerationDependency);
+	}
+
+	/**
 	 * Removes all dependencies and blocks
 	 * @returns {void}
 	 */
 	clearDependenciesAndBlocks() {
 		if (this.presentationalDependencies !== undefined) {
 			this.presentationalDependencies.length = 0;
+		}
+		if (this.codeGenerationDependencies !== undefined) {
+			this.codeGenerationDependencies.length = 0;
 		}
 		super.clearDependenciesAndBlocks();
 	}
@@ -668,7 +692,7 @@ class Module extends DependenciesBlock {
 
 	/**
 	 * @param {NeedBuildContext} context context info
-	 * @param {function(WebpackError=, boolean=): void} callback callback function, returns true, if the module needs a rebuild
+	 * @param {function((WebpackError | null)=, boolean=): void} callback callback function, returns true, if the module needs a rebuild
 	 * @returns {void}
 	 */
 	needBuild(context, callback) {
@@ -796,7 +820,8 @@ class Module extends DependenciesBlock {
 			runtimeTemplate,
 			moduleGraph: chunkGraph.moduleGraph,
 			chunkGraph,
-			runtime: undefined
+			runtime: undefined,
+			codeGenerationResults: undefined
 		};
 		const sources = this.codeGeneration(codeGenContext).sources;
 		return type ? sources.get(type) : sources.get(first(this.getSourceTypes()));
@@ -882,6 +907,10 @@ class Module extends DependenciesBlock {
 		return true;
 	}
 
+	hasChunkCondition() {
+		return this.chunkCondition !== Module.prototype.chunkCondition;
+	}
+
 	/**
 	 * Assuming this module is in the cache. Update the (cached) module with
 	 * the fresh module from the factory. Usually updates internal references
@@ -895,6 +924,36 @@ class Module extends DependenciesBlock {
 		this.context = module.context;
 		this.factoryMeta = module.factoryMeta;
 		this.resolveOptions = module.resolveOptions;
+	}
+
+	/**
+	 * Module should be unsafe cached. Get data that's needed for that.
+	 * This data will be passed to restoreFromUnsafeCache later.
+	 * @returns {object} cached data
+	 */
+	getUnsafeCacheData() {
+		return {
+			factoryMeta: this.factoryMeta,
+			resolveOptions: this.resolveOptions
+		};
+	}
+
+	/**
+	 * restore unsafe cache data
+	 * @param {object} unsafeCacheData data from getUnsafeCacheData
+	 * @param {NormalModuleFactory} normalModuleFactory the normal module factory handling the unsafe caching
+	 */
+	_restoreFromUnsafeCache(unsafeCacheData, normalModuleFactory) {
+		this.factoryMeta = unsafeCacheData.factoryMeta;
+		this.resolveOptions = unsafeCacheData.resolveOptions;
+	}
+
+	/**
+	 * Assuming this module is in the cache. Remove internal references to allow freeing some memory.
+	 */
+	cleanupForCache() {
+		this.factoryMeta = undefined;
+		this.resolveOptions = undefined;
 	}
 
 	/**
@@ -939,6 +998,7 @@ class Module extends DependenciesBlock {
 		write(this.buildMeta);
 		write(this.buildInfo);
 		write(this.presentationalDependencies);
+		write(this.codeGenerationDependencies);
 		super.serialize(context);
 	}
 
@@ -956,6 +1016,7 @@ class Module extends DependenciesBlock {
 		this.buildMeta = read();
 		this.buildInfo = read();
 		this.presentationalDependencies = read();
+		this.codeGenerationDependencies = read();
 		super.deserialize(context);
 	}
 }

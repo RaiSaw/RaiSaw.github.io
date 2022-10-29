@@ -73,13 +73,15 @@ HarmonyCompatibilityDependency.Template = class HarmonyExportDependencyTemplate 
 			runtimeRequirements.add(RuntimeGlobals.asyncModule);
 			initFragments.push(
 				new InitFragment(
-					`${RuntimeGlobals.asyncModule}(${module.moduleArgument}, async (__webpack_handle_async_dependencies__) => {\n`,
+					runtimeTemplate.supportsArrowFunction()
+						? `${RuntimeGlobals.asyncModule}(${module.moduleArgument}, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n`
+						: `${RuntimeGlobals.asyncModule}(${module.moduleArgument}, async function (__webpack_handle_async_dependencies__, __webpack_async_result__) { try {\n`,
 					InitFragment.STAGE_ASYNC_BOUNDARY,
 					0,
 					undefined,
-					module.buildMeta.async
-						? `\n__webpack_handle_async_dependencies__();\n}, 1);`
-						: "\n});"
+					`\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } }${
+						module.buildMeta.async ? ", 1" : ""
+					});`
 				)
 			);
 		}

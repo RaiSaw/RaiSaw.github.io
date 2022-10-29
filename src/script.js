@@ -1,13 +1,22 @@
 import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import * as dat from 'dat.gui'
+import * as dat from 'lil-gui'
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 //Texture Loader
-const loader = new THREE.TextureLoader()
+const textureLoader = new THREE.TextureLoader()
+const flare = textureLoader.load('/3.png')
 
 // Debug
 const gui = new dat.GUI()
+
+const parameters = {
+    color: '#30D5C8'
+}
+gui.addColor(parameters, 'color').onChange(() => {
+    particlesMaterial.color.set(parameters.color)
+})
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -15,49 +24,55 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-// Objects
-const geometry = new THREE.TorusGeometry( .7, .2, 16, 100 );
+// Objects/ Model
 
-const particlesGeometry =new THREE.BufferGeometry;
-const particlesCnt = 5000;
+const gltfLoader = new GLTFLoader()
+let mixer = null
 
-const posArray = new Float32Array(particlesCnt * 3);
-//xyz, xyz, xyz, xyz
+ gltfLoader.load('/blu.glb', (gltf) =>{
+    gltf.scene.scale.set(0.1, 0.1, 0.1)
+    gltf.scene.position.set( 1.2, 2 , .5)
+    gltf.scene.rotation.set(6.9, 2, 0)
+    scene.add(gltf.scene)
 
-for (let i=0; i<particlesCnt *3; i++){
-    //posArray[i]= Math.random()
-    //posArray[i]= Math.random() - 0.5
+    mixer = new THREE.AnimationMixer(gltf.scene)
+    const action = mixer.clipAction(gltf.animations[0])
+    action.play()
+ })
+
+const particlesGeometry =new THREE.BufferGeometry()
+const particlesCount = 5000
+
+const posArray = new Float32Array(particlesCount * 3);
+
+for (let i = 0; i < particlesCount * 3; i++){
     posArray[i]= (Math.random() - 0.5) * 7
 }
 particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3))
 
 // Materials
 
-const material = new THREE.PointsMaterial({
-    size: 0.005
-})
-// 3D.gltf
 const particlesMaterial = new THREE.PointsMaterial({
-    size: 0.005,
+    size: 0.05,
     transparent: true,
-    color: 'turquiose',
-    blending: THREE.AdditiveBlending
+    sizeAttenuation: true,
+    color: parameters.color,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    alphaMap: flare
 })
 
-// Mesh
-const sphere = new THREE.Points(geometry,material)
-const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial)
-scene.add(particlesMesh)
+// Particles
+
+const particles = new THREE.Points(particlesGeometry, particlesMaterial)
+scene.add(particles)
 
 // Lights
 
-const pointLight = new THREE.PointLight(0xffffff, 0.1)
-pointLight.position.x = 2
-pointLight.position.y = 3
-pointLight.position.z = 4
-scene.add(pointLight)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
+scene.add(ambientLight)
 
-/**
+/*
  * Sizes
  */
 const sizes = {
@@ -83,15 +98,15 @@ window.addEventListener('resize', () => {
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 0
-camera.position.y = 0
-camera.position.z = 2
+const camera = new THREE.PerspectiveCamera(78, sizes.width / sizes.height, 0.1, 100)
+camera.position.set(2, 2, 2)
 scene.add(camera)
 
 // Controls
-// const controls = new OrbitControls(camera, canvas)
-// controls.enableDamping = true
+const controls = new OrbitControls(camera, canvas)
+controls.enable = false
+controls.enableDamping = true
+controls.target.set(0, 0.75, 0)
 
 /**
  * Renderer
@@ -99,9 +114,10 @@ scene.add(camera)
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
+renderer.shadowMap.enabled = true
+renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-//renderer.setClearColor(new THREE.Color('black'), 1)
 
 //Mouse
 document.addEventListener('mousemove', animateParticles)
@@ -119,21 +135,30 @@ function animateParticles(event){
  */
 
 const clock = new THREE.Clock()
+let previousTime = 0
 
 const tick = () => {
 
     const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+    previousTime = elapsedTime
+
+    // Update mixer
+
+    if(mixer !== null){
+        mixer.update(deltaTime)
+    }
 
     // Update objects
-    sphere.rotation.y = .5 * elapsedTime
-    particlesMesh.rotation.y = -.1 * elapsedTime
+
+    particles.rotation.y = - 0.1 * elapsedTime
 
     if (mouseX > 0){
-        particlesMesh.rotation.y = mouseX * (elapsedTime * 0.00008)
-        particlesMesh.rotation.x = -mouseY * (elapsedTime * 0.00008)
+        particles.rotation.y = mouseX * (elapsedTime * 0.00008)
+        particles.rotation.x = - mouseY * (elapsedTime * 0.00008)
     }
     // Update Orbital Controls
-    // controls.update()
+    controls.update()
 
     // Render
     renderer.render(scene, camera)
