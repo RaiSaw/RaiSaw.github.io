@@ -8,8 +8,7 @@ html,
 body
 {
     height: 100vh;
-    color: white;
-    background: radial-gradient(ellipse at top, teal, black, indigo );
+    background: radial-gradient(black, black, #390050);
     display: flex;
     overflow-x: hidden;
     font-family: 'Hind', sans-serif;
@@ -40,7 +39,7 @@ h1.greeting:first-letter {
     float: start;
     text-transform: uppercase;
     line-height: .5;
-    font-size: 80px;
+    font-size: 60px;
     text-align: center;
 }
 h1{
@@ -61,29 +60,28 @@ p{
     font-family: 'Macondo Swash Caps', cursive;
     text-align: center;
 }
-h2{
-    border-radius: 0 !important;
-    display: inline-flex;
-    text-align: center;
+h2{ 
+    border: 8px solid;
     color: #683aa4;
-    font-size: 30px;
+    font-size: 33px;
+    font-weight: 900;
     text-shadow: 0 0 10px #4700D8;
     font-family: 'Macondo Swash Caps', cursive;
-
-    --d: 14px;
-
-    padding: 8px 8px calc(8px + var(--d)) 8px;
-    background: linear-gradient(rgba(255, 255, 255, 0.4) 0, 0) bottom/100% var(--d) no-repeat;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--d)), calc(100% - 3px) calc(100% - var(--d)), 3px calc(100% - var(--d)), 0 calc(100% - var(--d)));
-    transform: perspective(1000px) rotateX(0deg);
-    transition: 0.4s, color 0.4s 0.4s, background-color 0.4s 0.4s;
+    border-image: repeating-linear-gradient(135deg,#F8CA00 0 10px, black 0 20px,black 0 30px) 8;
+    -webkit-mask: 
+    conic-gradient(from 180deg at top 8px right 8px, #0000 90deg,#000 0)
+    var(--_i,200%) 0  /200% var(--_i,8px) border-box no-repeat,
+    conic-gradient(at bottom 8px left  8px,  #0000 90deg,#000 0)
+    0   var(--_i,200%)/var(--_i,8px) 200% border-box no-repeat,
+    linear-gradient(#000 0 0) padding-box no-repeat;
+    transition: .3s, -webkit-mask-position .3s .3s;
 }
-h2:hover {
-    background-color: #4700D8;
+
+h2:hover { 
+    --_i: 100%;
     color: white;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--d)), calc(100% - 3px) 100%, 3px 100%, 0 calc(100% - var(--d)));
-    transform: perspective(1000px) rotateX(40deg);
-    transition: 0.4s, clip-path 0.4s 0.4s, transform 0.4s 0.4s;
+    transition: .3s, -webkit-mask-size .3s .3s;
+    border-radius: 1rem;
 }
 
 
