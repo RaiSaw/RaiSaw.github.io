@@ -1,20 +1,21 @@
 {
   "files": {
-    "main.css": "/static/css/main.84deb785.css",
-    "main.js": "/static/js/main.d5f35a21.js",
+    "main.css": "/static/css/main.aa858310.css",
+    "main.js": "/static/js/main.5a51a34d.js",
     "static/js/111.9a455c28.chunk.js": "/static/js/111.9a455c28.chunk.js",
-    "static/media/Scene.png": "/static/media/Scene.e217c825ea3831d1b717.png",
+    "static/media/Scene3.png": "/static/media/Scene3.8cd5f455ed7955442e1e.png",
     "static/media/LuckyShrub.png": "/static/media/LuckyShrub.3765a6ff70e4962cb81a.png",
     "static/media/OldWebsite.png": "/static/media/OldWebsite.d9731e725c878e368464.png",
-    "static/media/Homepage.png": "/static/media/Homepage.6603f5aada5b3d7a51fe.png",
+    "static/media/Homepage.png": "/static/media/Homepage.d94d982710fe41d6c757.png",
+    "static/media/Lil-Lemon.png": "/static/media/Lil-Lemon.3c555f4f13c749377d34.png",
     "static/media/LilLemon.png": "/static/media/LilLemon.65318ddb1090ff101b39.png",
     "index.html": "/index.html",
-    "main.84deb785.css.map": "/static/css/main.84deb785.css.map",
-    "main.d5f35a21.js.map": "/static/js/main.d5f35a21.js.map",
+    "main.aa858310.css.map": "/static/css/main.aa858310.css.map",
+    "main.5a51a34d.js.map": "/static/js/main.5a51a34d.js.map",
     "111.9a455c28.chunk.js.map": "/static/js/111.9a455c28.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.84deb785.css",
-    "static/js/main.d5f35a21.js"
+    "static/css/main.aa858310.css",
+    "static/js/main.5a51a34d.js"
   ]
 }
